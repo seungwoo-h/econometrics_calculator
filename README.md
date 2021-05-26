@@ -7,6 +7,7 @@ This package wraps python libraries (statsmodels, pandas.. etc) for specific eco
 ```powershell
 pip install git+https://github.com/seungwoo-h/econometrics_calculator.git
 ```
+Copy & past on a command line interface.
 
 ## Usage
 
