@@ -1,4 +1,6 @@
 ---
+# Overview
+This package wraps python libraries (statsmodels, pandas.. etc) for specific econometrics statistical modeling.
 
 # Install
 
