@@ -29,10 +29,13 @@ df_1 = preprocess_ln(ln_cols=['vio'],
 
 # Linear regression
 # prints out OLS reg result
+
+# Univariate
 linear_regression(iv_lst=['shall'], 
                   dv='ln_vio', 
                   data=df_1) 
                   
+# Multivariate          
 linear_regression(iv_lst=['shall', 'incarc_rate', 'density', 'avginc', 'pop', 'pb1064', 'pw1064', 'pm1029'], 
                   dv='ln_vio', 
                   data=df_1)
