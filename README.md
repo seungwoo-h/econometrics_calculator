@@ -9,7 +9,7 @@ pip install git+https://github.com/seungwoo-h/econometrics_calculator.git
 ```
 Copy & past on a command line interface.
 
-## Usage
+## Tutorial
 
 ```python
 from econometrics_stats import (
@@ -21,7 +21,7 @@ from econometrics_stats import (
                               )
 
 # Data load
-df = load_data(path='path')
+df_original = load_data(path='path')
 
 # Preprocess ln()
 df_1 = preprocess_ln(ln_cols=['vio'], 
