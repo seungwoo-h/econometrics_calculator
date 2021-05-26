@@ -53,7 +53,7 @@ def instrument_ols(iv, dv, instrument, data):
   result = model.fit()
   print(result.summary)
 
-def panel_ols(iv_lst, dv, fixed_entity, fixed_time, data):
+def panel_ols(iv_lst, dv, data, fixed_entity=None, fixed_time=None):
   """
   iv_lst : 독립변수 리스트
   dv: 타겟변수 스트링
@@ -61,13 +61,22 @@ def panel_ols(iv_lst, dv, fixed_entity, fixed_time, data):
   fixed_entity: entity 변수
   fixed_time: time 변수
   """
-  data_ = data.copy()
-  data_ = data_.set_index([fixed_entity, fixed_time])
+  # data_ = data.copy()
   formula_1 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + EntityEffects"
-  formula_2 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + EntityEffects + TimeEffects"
-  model_1 = PanelOLS.from_formula(formula=formula_1, data=data_)
-  model_2 = PanelOLS.from_formula(formula=formula_2, data=data_)
-  print("###### Fixed Entity Effects ######")
-  print(model_1.fit())
-  print("\n ###### Fixed Time Effects ######")
-  print(model_2.fit())
+  formula_2 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + TimeEffects"
+  formula_3 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + TimeEffects + EntityEffects"
+  if fixed_entity is not None:
+    data_ = data.set_index([fixed_entity, fixed_time])
+    model_1 = PanelOLS.from_formula(formula=formula_1, data=data_)
+    print("###### Fixed Entity Effects ######")
+    print(model_1.fit())
+  if fixed_time is not None:
+    data_ = data.set_index([fixed_entity, fixed_time])
+    model_2 = PanelOLS.from_formula(formula=formula_2, data=data_)
+    print("\n ###### Fixed Time Effects ######")
+    print(model_2.fit())
+  if (fixed_entity is not None) and (fixed_time is not None):
+    data_ = data.set_index([fixed_entity, fixed_time])
+    print("\n ###### Fixed Entity & Time Effects ######")
+    model_3 = PanelOLS.from_formula(formula=formula_3, data=data_)
+    print(model_3.fit())
