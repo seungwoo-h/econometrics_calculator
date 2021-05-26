@@ -1,0 +1,6 @@
+econometrics_stats.py
+setup.py
+econometricsstats.egg-info/PKG-INFO
+econometricsstats.egg-info/SOURCES.txt
+econometricsstats.egg-info/dependency_links.txt
+econometricsstats.egg-info/top_level.txt
