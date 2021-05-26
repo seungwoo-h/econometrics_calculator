@@ -53,6 +53,26 @@ def instrument_ols(iv, dv, instrument, data):
   result = model.fit()
   print(result.summary)
 
+def _single_panel_ols(iv_lst, dv, data, fixed):
+  df_demean = data.copy()
+
+  # calculate the entity(state) mean beer tax
+  for iv in iv_lst:
+    df_demean[f'Mean_{iv}_by{fixed}'] = df_demean.groupby(fixed)[iv].transform(np.mean)
+
+  # calculate the entity(state) mean for fatal rate
+  df_demean[f'Mean_{dv}_by{fixed}'] = df_demean.groupby(fixed)[dv].transform(np.mean)
+
+  # demean, subtract each row by the entity-mean
+  df_demean[dv] = df_demean[dv] - df_demean[f'Mean_{dv}_by{fixed}']
+
+  for iv in iv_lst:
+    df_demean[iv] = df_demean[iv] - df_demean[f'Mean_{iv}_by{fixed}']
+
+  model = sm.OLS(df_demean[dv], df_demean[iv_lst])
+  results = model.fit()
+  print(results.summary())
+
 def panel_ols(iv_lst, dv, data, fixed_entity=None, fixed_time=None):
   """
   iv_lst : 독립변수 리스트
@@ -61,20 +81,15 @@ def panel_ols(iv_lst, dv, data, fixed_entity=None, fixed_time=None):
   fixed_entity: entity 변수
   fixed_time: time 변수
   """
-  # data_ = data.copy()
-  formula_1 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + EntityEffects"
-  formula_2 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + TimeEffects"
   formula_3 = f"{dv} ~ 1 + {'+'.join(iv_lst)} + TimeEffects + EntityEffects"
   if fixed_entity is not None:
-    data_ = data.set_index([fixed_entity, fixed_time])
-    model_1 = PanelOLS.from_formula(formula=formula_1, data=data_)
     print("###### Fixed Entity Effects ######")
-    print(model_1.fit())
+    data_ = data.copy()
+    _single_panel_ols(iv_lst, dv, data_, fixed_entity)
   if fixed_time is not None:
-    data_ = data.set_index([fixed_entity, fixed_time])
-    model_2 = PanelOLS.from_formula(formula=formula_2, data=data_)
     print("\n ###### Fixed Time Effects ######")
-    print(model_2.fit())
+    data_ = data.copy()
+    _single_panel_ols(iv_lst, dv, data_, fixed_time)
   if (fixed_entity is not None) and (fixed_time is not None):
     data_ = data.set_index([fixed_entity, fixed_time])
     print("\n ###### Fixed Entity & Time Effects ######")
