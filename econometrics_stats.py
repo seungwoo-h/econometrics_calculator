@@ -56,14 +56,11 @@ def instrument_ols(iv, dv, instrument, data):
 def _single_panel_ols(iv_lst, dv, data, fixed):
   df_demean = data.copy()
 
-  # calculate the entity(state) mean beer tax
   for iv in iv_lst:
     df_demean[f'Mean_{iv}_by{fixed}'] = df_demean.groupby(fixed)[iv].transform(np.mean)
 
-  # calculate the entity(state) mean for fatal rate
   df_demean[f'Mean_{dv}_by{fixed}'] = df_demean.groupby(fixed)[dv].transform(np.mean)
 
-  # demean, subtract each row by the entity-mean
   df_demean[dv] = df_demean[dv] - df_demean[f'Mean_{dv}_by{fixed}']
 
   for iv in iv_lst:
