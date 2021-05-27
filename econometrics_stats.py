@@ -22,9 +22,10 @@ def preprocess_ln(ln_cols, data):
   ln_cols 에 ln() 해줘야할 컬럼들 전부 아래와 같이 입력
   ['rob', 'mur' ,'vio']
   """
+  data_ = data.copy()
   for col in ln_cols:
-    data[f"ln_{col}"] = np.log(data[col])
-  return data
+    data_[f"ln_{col}"] = np.log(data_[col])
+  return data_
 
 def linear_regression(iv_lst, dv, data):
   """
